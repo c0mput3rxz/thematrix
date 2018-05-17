@@ -14,7 +14,6 @@ import socket as raw_socket
 
 monkey.patch_all()
 
-badusernames = "about access account accounts activate add address adm admin administration administrator adult advertising affiliate affiliates ajax analytics android anon anonymous api app apple apps arabic archive archives atom auth authentication avatar awadhi azerbaijani backup banner banners bengali better bhojpuri billing bin blog blogs board bot bots burmese business cache cadastro calendar campaign cancel careers cart cgi changelog chat checkout chinese client cliente code codereview comercial compare compras config configuration connect contact contest create css cvs dashboard data delete demo design designer dev devel dir direct direct_messages directory doc docs documentation domain download downloads dutch ecommerce edit editor edits email employment english enterprise exchange facebook faq farsi favorite favorites feed feedback feeds file files fleet fleets flog follow followers following forum forums free french friend friends ftp gadget gadgets games gan german gist git github google group groups guest gujarati hakka hausa help hindi home homepage host hosting hostmaster hostname hpg html http httpd https idea ideas image images imap img index indice info information intranet invitations invite ipad iphone irc italian japanese java javanese javascript jinyu job jobs json kannada knowledgebase korean language languages list lists local localhost log login logout logs mail mail1 mail2 mail3 mail4 mail5 mailer mailing maithili malayalam manager mandarin map maps marathi marketing master media message messenger microblog microblogs min-nan mine mis mob mobile mobilemail movie movies mp3 msg msn music musicas mysql name named net network new news newsletter nick nickname notes noticias null none ns1 ns2 ns3 ns4 oauth oauth_clients offers old online openid operator order orders organizations oriya page pager pages panel panjabi password pda perl photo photoalbum photos php pic pics plans plugin plugins polish pop pop3 popular portuguese post postfix postmaster posts privacy profile project projects promo pub public put python random recruitment register registration remove replies repo romanian root rss ruby russian sale sales sample samples save script scripts search secure security send serbo-croatian service sessions setting settings setup sftp shop signin signup sindhi site sitemap sites smtp soporte spanish sql ssh ssl ssladmin ssladministrator sslwebmaster stage staging start stat static stats status store stores stories styleguide subdomain subscribe subscriptions sunda suporte support svn sysadmin sysadministrator system tablet tablets talk tamil task tasks tech telnet telugu terms test test1 test2 test3 teste tests thai theme themes tmp todo tools tour translations trends turkish twitter twittr ukrainian unfollow unsubscribe update upload urdu url usage user username usuario vendas video videos vietnamese visitor weather web webmail webmaster website websites webstats widget widgets wiki win workshop wws www www1 www2 www3 www4 www5 www6 www7 wwws wwww xfn xiang xml xmpp xmppSuggest xpg xxx yaml yml yoruba you yourdomain yourname yoursite yourusername"
 
 def in_edit_mode_prompt(self):
     return "> "
@@ -167,7 +166,6 @@ class TelnetClient(Client):
         self.writeln("Disconnecting..")
 
     def restart_login_username(self):
-        self.temporary_actor.name = ""
         self.write("What is your name? ")
         self.state = "login_username"
 
@@ -225,18 +223,7 @@ class TelnetClient(Client):
         self.start_motd()
 
     def start_verify_name(self):
-        if len(self.temporary_actor.name) < 3:
-            self.writeln("You name does not meet the length requirement. (Minimum 4).")
-            self.writeln("What is your true name, adventurer? ")
-            self.temporary_actor.name = None
-            self.start_verify_name()
-        elif badusernames.find(self.temporary_actor.name.lower()) >= 0:
-            self.writeln("You name was less than appropriate. (Reserved word).")
-            self.writeln("What is your true name, adventurer? ")
-            self.temporary_actor.name = None
-            self.start_verify_name()
-        else:
-            self.write("""
+        self.write("""
 {{B+{{b------------------------{{B[ {{CWelcome to Waterdeep {{B]{{b\
 -------------------------{{B+{{x
 
@@ -284,15 +271,8 @@ Did I get that right, {} (Y/N)? """.format(self.temporary_actor.name))
                 self.temporary_actor.name))
 
     def handle_select_password_input(self, message):
-        if len(message) < 3:
-            self.writeln("You password does not meet the length requirement. (Minimum 4)")
-            self.start_select_password()
-        elif self.temporary_actor.name.lower() == message.lower():
-            self.writeln("Your password should not match your name.")
-            self.start_select_password()
-        else:
-            self.temporary_actor.password = hash_password(message)
-            self.start_confirm_password()
+        self.temporary_actor.password = hash_password(message)
+        self.start_confirm_password()
 
     def start_confirm_password(self):
         self.state = "confirm_password"
@@ -309,26 +289,28 @@ Did I get that right, {} (Y/N)? """.format(self.temporary_actor.name))
     @inject("Races")
     def start_select_race(self, Races):
         self.state = "select_race"
+        self.write("""
+{B+---------------------------[ {RPick your Race {B]----------------------------+
+
+  {BWelcome to the birthing process of your character.  Below you will
+  find a choice between human and digital. There is a war coming and 
+  you have to choose. 
+
+  Human - You jump back and forth between the real world and digital
+        - Humans main goal is to stay alive. 
+        - Available classes: {WCoder{w, {WJacker{w, {WPlugged{w, {WReal{R
+
+  Digital - You are fixed in either world.
+        - Your main goal is to restore equilibrium to The Matrix.
+        - Available classes: {rArchitech{w, {rAgent{w, {rSentinel{w, {rProgram{x     
+
+""")
+
         output = """
-+---------------------------[ Pick your Race ]----------------------------+
-
-  Welcome to the birthing process of your character.  Below you will
-  find a list of available races and their basic stats.  You will gain
-  an additional +2 points on a specific stat depending on your choice
-  of class.  For detailed information see our website located at
-  http://waterdeep.org or type HELP (Name of Race) below.
-
-            STR INT WIS DEX CON
-"""
-
-        for race in Races.query():
-            output += "            {} 0 0 0 0 0\n".format(race.name)
-
-        output += """
 
 +-------------------------------------------------------------------------+
 
-Please choose a race, or HELP (Name of Race) for more info: """
+Please choose a race (human/digital), or HELP (Name of Race) for more info: """
         self.write(output)
 
     @inject("Races")
@@ -339,18 +321,20 @@ Please choose a race, or HELP (Name of Race) for more info: """
             self.writeln("That race does not exist, please try again.")
             return
 
-        self.start_select_gender()
         self.temporary_actor.race_ids = [race.id]
+        self.start_select_gender()
 
     @inject("Genders")
     def start_select_gender(self, Genders):
         self.state = "select_gender"
         output = """
 +--------------------------[ Pick your Gender ]---------------------------+
+
 """
 
         for gender in Genders.query():
-            output += "        {}\n".format(gender.name)
+            if self.temporary_actor.race_ids[0] == gender.race:
+                output += "        {}\n".format(gender.name)
 
         output += """
 +-------------------------------------------------------------------------+
@@ -376,9 +360,8 @@ Please choose a gender for your character: """
         output = """
 +--------------------------[ Pick your Class ]---------------------------+
 
-  Waterdeep has a 101 level, 2 Tier remorting system.  After the first
-  101 levels you will reroll and be able to choose a new race and class.
-  2nd Tier classes are upgrades from their 1st tier counterparts.
+  The Matrix has a no levels, and a unique remort system.  After becoming The One
+  you can reroll and be able to choose a new race and class.
 
   For more information type HELP (Name of Class) to see their help files.
 """
@@ -417,10 +400,10 @@ Try again: """)
         self.write("""
 +------------------------[ Pick your Alignment ]-------------------------+
 
-  Your alignment will effect how much experience you get from certain
-  mobiles, such as you gain less experience if you are evil, and you kill
-  evil mobiles.  You gain more for killing good mobiles.  There are spells
-  available that can counter this effect.
+  Your alignment will effect how you interact with certain mobiles and quest
+  mobiles. You will be able to do quests for an alignment to build your align
+  affinity. You're starting choice will give you a head start in the alignment
+  of your choice.
 
                                   Good
                                   Neutral
@@ -576,7 +559,7 @@ Welcome to Waterdeep 'City Of Splendors'!  Please obey the rules, (help rules).
 
         level = actor.stats.level.base
         total_xp = ((level - 1) * actor.experience_per_level) + \
-            actor.experience
+                   actor.experience
         xp_tnl = actor.experience_per_level - actor.experience
 
         hp_color = "{G"

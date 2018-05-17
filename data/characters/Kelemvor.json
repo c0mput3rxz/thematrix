@@ -1,0 +1,34 @@
+{
+    "bracket": "",
+    "class_ids": [
+        "agent"
+    ],
+    "connection_id": null,
+    "experience": 0,
+    "experience_per_level": 3000,
+    "gender_id": "female",
+    "id": "0e3d7948d2bb6810b9b51547465780325db454e6",
+    "name": "Kelemvor",
+    "online": false,
+    "password": "8898a2fc7e6cfd75b1e54de5a8fca1781fbeaa7f8ffa2815ac37b92b485cf4be",
+    "race_ids": [
+        "digital"
+    ],
+    "room_id": "472263332730",
+    "room_vnum": "market_square",
+    "settings": {},
+    "stats": {
+        "alignment": 0,
+        "current_hp": 100,
+        "current_mana": 100,
+        "current_moves": 0,
+        "hp": 100,
+        "level": 1,
+        "mana": 100,
+        "moves": 0,
+        "next_quest_time": 0,
+        "quest_time": 0
+    },
+    "tier": 0,
+    "title": ""
+}

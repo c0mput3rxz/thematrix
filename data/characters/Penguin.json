@@ -1,0 +1,34 @@
+{
+    "bracket": "",
+    "class_ids": [
+        "real"
+    ],
+    "connection_id": null,
+    "experience": 0,
+    "experience_per_level": 3000,
+    "gender_id": "male",
+    "id": "fe58eebb20081a9cd267cf69d726b10b8b63a310",
+    "name": "Penguin",
+    "online": false,
+    "password": "68b7a6669f8784e3464a387b8056938564141d8b831d9cb444e98c025bceb4d1",
+    "race_ids": [
+        "digital"
+    ],
+    "room_id": "472263332730",
+    "room_vnum": "market_square",
+    "settings": {},
+    "stats": {
+        "alignment": 0,
+        "current_hp": 100,
+        "current_mana": 100,
+        "current_moves": 0,
+        "hp": 100,
+        "level": 1,
+        "mana": 100,
+        "moves": 0,
+        "next_quest_time": 0,
+        "quest_time": 0
+    },
+    "tier": 0,
+    "title": ""
+}

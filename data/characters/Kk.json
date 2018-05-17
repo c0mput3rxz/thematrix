@@ -1,0 +1,35 @@
+{
+    "bracket": "",
+    "class_ids": [
+        "agent"
+    ],
+    "connection_id": null,
+    "experience": 205,
+    "experience_per_level": 3000,
+    "gender_id": "male",
+    "id": "d149bd5ebe4c367ae3aac2b72a668f0d15db618d",
+    "name": "Kk",
+    "online": false,
+    "password": "e17caae2b136135e1edb8866b4f1c08c16e1a18e220d33ec2d6600fe27b288bc",
+    "race_ids": [
+        "digital"
+    ],
+    "room_id": "472263332730",
+    "room_vnum": "market_square",
+    "settings": {},
+    "stats": {
+        "alignment": 0,
+        "current_hp": 100,
+        "current_mana": 100,
+        "current_moves": 0,
+        "hp": 100,
+        "level": 1,
+        "mana": 100,
+        "moves": 0,
+        "next_quest_time": 0,
+        "quest_time": 0
+    },
+    "target_ids": [],
+    "tier": 0,
+    "title": ""
+}
