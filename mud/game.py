@@ -15,7 +15,7 @@ FORMAT = "%(asctime)-15s [%(levelname)s] " + \
 formatter = logging.Formatter(FORMAT)
 
 logging.basicConfig(format=FORMAT)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 log_file = RotatingFileHandler("log/undermountain.log")
 log_file.setFormatter(formatter)

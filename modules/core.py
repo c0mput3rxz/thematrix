@@ -5,6 +5,7 @@ from mud.inject import inject
 from utils.ansi import pad_right, stop_color_bleed
 from utils.hash import get_random_hash
 from mud.timer_manager import TimerManager
+from random import randint, choice
 
 import gevent
 import settings
@@ -14,7 +15,6 @@ import logging
 EXIT_DOOR = "door"
 EXIT_CLOSED = "closed"
 EXIT_SECRET = "secret"
-
 
 class Map(object):
     @classmethod
@@ -788,11 +788,233 @@ def direction_command(self, name, Directions, Rooms, **kwargs):
 
     return 0.5
 
+def create_default_char(self):
+    self.ethos = "Chaotic Good"
+    self.age = 1
+    if self.stats.move.total < 1:
+        self.stats.move.base = 100
+        self.stats.trains = 25
+        self.stats.practices = 25
+        self.stats.saves = -50
+    self.stats.saves = -150
+    self.base_str = 16
+    self.current_str = 25
+    self.current_items = "test"
+    self.max_items = 420
+    self.hitroll = 421
+    self.base_int = 17
+    self.current_int = 26
+    self.current_weight = 134
+    self.max_weight = 666
+    self.damroll = 422
+    self.base_wis = 18
+    self.current_wis = 27
+    self.base_dex = 19
+    self.current_dex = 28
+    self.arena_wins = 4
+    self.base_con = 20
+    self.current_con = 25
+    self.trains = 3
+    self.arena_losses = 5
+    self.platinum = 6
+    self.invisibility = 7
+    self.gold = 8
+    self.total_experience = 999
+    self.silver = 10
+    self.incgnito = 40
+    self.adventure_points = 50
+    self.pierce_ac = 400
+    self.slash_ac = 300
+    self.bash_ac = 200
+    self.magic_ac = 600
+    self.align = -300
+    self.wimpy = 6000
+    self.quest_points = 134
+    self.pkstatus = "Hardcore PK"
+    return self
+
+def ac_string(ac, type):
+    if type == "pierce":
+        if ac < 0:
+            return "Vulnerable"
+        if ac < 100:
+            return "Do not poke me please"
+        if ac < 200:
+            return "Your don't like needles"
+        if ac < 300:
+            return "Thumbalina"
+        if ac < 400:
+            return "Leather Tough"
+        if ac < 500:
+            return "Hard as Tin"
+        if ac < 600:
+            return "Hard as a Rock"
+        if ac < 700:
+            return "Hard as Steel"
+        if ac < 800:
+            return "Hard as Fuck"
+        if ac <= 900:
+            return "Unpokable"
+        if ac > 900:
+            return "Poke Master Mike"
+        
+    if type == "bash":
+        if ac < 0:
+            return "Vulnerable"
+        if ac < 100:
+            return "Wet paper bag"
+        if ac < 200:
+            return "Crumpled"
+        if ac < 300:
+            return "Solid"
+        if ac < 400:
+            return "Rigid"
+        if ac < 500:
+            return "Tough"
+        if ac < 600:
+            return "Armor Plated"
+        if ac < 700:
+            return "Iron Man"
+        if ac < 800:
+            return "Armored like a tank"
+        if ac <= 900:
+            return "Armored like a fortress"
+        if ac > 900:
+            return "King Crush"
+
+    if type == "slash":
+        if ac < 0:
+            return "Vulnerable"
+        if ac < 100:
+            return "Deadly Pappercut"
+        if ac < 200:
+            return "Anemic"
+        if ac < 300:
+            return "Bumbaclot"
+        if ac < 400:
+            return "Glassproof"
+        if ac < 500:
+            return "Cutproof"
+        if ac < 600:
+            return "Armor Plated"
+        if ac < 700:
+            return "Serrated Protection"
+        if ac < 800:
+            return "Laugh at Machetes"
+        if ac <= 900:
+            return "Hellraiser"
+        if ac > 900:
+            return "Slapchop Steve"
+
+    if type == "magic":
+        if ac < 0:
+            return "Vulnerable"
+        if ac < 100:
+            return "Susceptible"
+        if ac < 200:
+            return "Gullible"
+        if ac < 300:
+            return "Prone to Fancy"
+        if ac < 400:
+            return "Guarded"
+        if ac < 500:
+            return "Protected"
+        if ac < 600:
+            return "Shielded"
+        if ac < 700:
+            return "Enchanded Protection"
+        if ac < 800:
+            return "Barrier"
+        if ac <= 900:
+            return "Reflect"
+        if ac > 900:
+            return "Merlin the Magician"
+
 
 def score_command(self, **kwargs):
+    self = create_default_char(self)
     self.echo("{{GName{{g:{{x {} {}".format(self.name, self.title))
     self.echo("{{GExperience{{g:{{x {}".format(self.experience))
+    self.echo("{{GDesc{{g:{{x {} {} {} {} {{GLevel{{g:{{x {} {{GAge{{g:{{x {}".format(
+        self.ethos,
+        self.gender.colored_short_name,
+        self.races[0].colored_name,
+        self.classes[0].colored_name,
+        self.stats.level.base,
+        self.age))
+    self.echo("{{GHP{{g:{{x{}/{} ({}) {{GMana{{g:{{x{}/{} ({}) {{GMove{{g:{{x{}/{} ({}) {{GSaves{{g:{{x{}".format(
+        self.stats.hp.base,
+        self.stats.hp.total,
+        self.stats.hp.base/self.stats.hp.total * 100,
+        self.stats.mana.base,
+        self.stats.mana.total,
+        self.stats.mana.base/self.stats.mana.total * 100,
+        self.stats.move.base,
+        self.stats.move.total,
+        self.stats.move.base/self.stats.move.total * 100,
+        self.stats.saves.base))
+    self.echo("{g------------+-----------------------+---------------")
+    self.echo("{{GStr{{g:{{x {}{{g({{x{}{{g) | {{GItems{{g:{{x      {}/{}   {{g| {{GHitroll{{g:{{x  {}".format(
+        self.base_str,
+        self.current_str,
+        len(self.current_items),
+        self.max_items,
+        self.hitroll))
+    self.echo("{{GInt{{g:{{x {}{{g({{x{}{{g) | {{GWeight{{g:{{x   {}/{}{{g   | {{GDamroll{{g:{{x  {}".format(
+        self.base_int,
+        self.current_int,
+        self.current_weight,
+        self.max_weight,
+        self.damroll))
+    self.echo("{{GWis{{g:{{x {}{{g({{x{}{{g) +----------------+------+---------------".format(
+        self.base_wis,
+        self.current_wis))
+    self.echo("{{GDex{{g:{{x {}{{g({{x{}{{g) | {{GPractices{{g:{{x   {}{{g | {{GArena Wins{{g:{{x     {}".format(
+        self.base_dex,
+        self.current_dex,
+        self.practices,
+        self.arena_wins))
+    self.echo("{{GCon{{g:{{x {}{{g({{x{}{{g) | {{GTrains{{g:{{x    134{{g | {{GArena Losses{{g:{{x   0".format(
+        self.base_con,
+        self.current_con,
+        self.trains,
+        self.arena_losses))
+    self.echo("{g------------+---------+------+----------------------")
 
+    self.echo("{{GCoins Platinum{{g:{{x     {}{{g | {{GInvisible{{g:{{x    {}".format(
+        self.platinum,
+        self.invisibility))
+    self.echo("{{G      Gold{{g:{{x         {}{{g | {{GExperience{{g:{{x  {}".format(
+        self.gold,
+        self.total_experience))
+    self.echo("{{G      Silver{{g:{{x      {}{{g | {{GIncognito{{g:{{x    {}".format(
+        self.silver,
+        self.incgnito))
+    self.echo("{{G      AP{{g:{{x          {}{{g |".format(
+        self.adventure_points))
+    self.echo("{g----------------------+-----------------------------")
+    self.echo("{{GArmor Pierce{{g:{{x    {} [{}]".format(
+        self.pierce_ac,
+        ac_string(self.pierce_ac, "pierce")))
+    self.echo("{{G      Bash{{g:{{x      {} [{}]".format(
+        self.bash_ac,
+        ac_string(self.bash_ac, "bash")))
+    self.echo("{{G      Slash{{g:{{x     {} [{}]".format(
+        self.slash_ac,
+        ac_string(self.slash_ac, "slash")))
+    self.echo("{{G      Magic{{g:{{x     {} [{}]".format(
+        self.magic_ac,
+        ac_string(self.magic_ac, "magic")))
+    self.echo("{g----------------+-------------+---------------------")
+    self.echo("{{GAlignment{{g:{{x {} {{g| {{GWimpy{{g:{{x {} {{g | {{GQuest Points{{g:{{x{}".format(
+        self.align,
+        self.wimpy,
+        self.quest_points))
+    self.echo("{g----------------+-------------+---------------------")
+    self.echo("{{GPkStatus{{g:{{x {}".format(
+        self.pkstatus
+    ))
+    self.echo("{g----------------------------------------------------")
 
 @inject("Characters")
 def who_command(self, Characters, **kwargs):
@@ -950,7 +1172,7 @@ class Actor(Entity):
 
     def die(self):
         self.recall()
-        self.stats.current_hp.base = 1
+        self.stats.hp.base = 1
 
     @inject("Rooms")
     def recall(self, Rooms):
@@ -966,8 +1188,34 @@ class Actor(Entity):
         while self.stats.level.base < settings.LEVEL_MAXIMUM and \
                 self.experience >= self.experience_per_level:
             self.stats.level.base += 1
-            self.echo("You gained a level! You are now level {}".format(
-                self.stats.level.base))
+
+            # TODO add class specific level gains,  roll_level(self)
+            mana_gain = randint(10, 85)
+            hp_gain = randint(20, 45)
+            move_gain = randint(10, 40)
+            practice_gain = randint(1, 6)
+            train_gain = randint(0, 2)
+            self.echo("You raise a level!!  Your gain is: {}/{} hp, {}/{} m, {}/{} mv .".format(
+                hp_gain,
+                self.stats.hp.total,
+                mana_gain,
+                self.stats.mana.total,
+                move_gain,
+                self.stats.move.total))
+            self.echo("You gained a level! You are now level {}. {}/{} pracs {}/{} trains".format(
+                self.stats.level.base,
+                practice_gain,
+                self.stats.practices.base,
+                train_gain,
+                self.stats.trains.base))
+
+            # level gain
+
+            self.stats.hp.base += hp_gain
+            self.stats.mana.base += mana_gain
+            self.stats.move.base += move_gain
+            self.stats.practices.base += practice_gain
+            self.stats.trains.base += train_gain
             self.experience -= self.experience_per_level
 
             if self.stats.level.base >= settings.LEVEL_MAXIMUM:

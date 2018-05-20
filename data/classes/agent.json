@@ -1,6 +1,7 @@
 {
     "id": "agent",
     "name": "Agent",
+    "colored_name": "{RA{rgent{x",
     "race": "digital",
     "short_name": "Agnt",
     "colored_short_name": "{RAgnt{x",

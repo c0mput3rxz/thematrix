@@ -37,12 +37,12 @@ class Battle(object):
         for i in range(3):
             self.attempt_hit(actor, target)
 
-            if target.stats.current_hp.base > 0:
+            if target.stats.hp.base > 0:
                 continue
 
             event = target.emit("before:death")
             if event.blocked:
-                target.stats.current_hp.base = 0
+                target.stats.hp.base = 0
                 continue
 
             target.act("{{c{}{{c is {{CDEAD{{c!{{x".format(target.name))
@@ -100,7 +100,7 @@ class Battle(object):
                 "{{B{}'s {}{{B {}{{B you! {{B-{{R={{C{}{{R={{B-{{x".format(
                     actor.name, noun, amount_text, amount))
 
-        target.stats.current_hp.base -= amount
+        target.stats.hp.base -= amount
 
 
 class CombatManager(TimerManager):
@@ -176,6 +176,37 @@ def kill_command(self, args, Actors, Battles, **kwargs):
 
     Battles.initiate(self, target)
 
+@inject("Actors", "Battles")
+def punch_command(self, args, Actors, Battles, **kwargs):
+    if not args:
+        self.echo("Punch whom?")
+        return
+
+    room = self.room
+    name = args.pop(0)
+
+    target = None
+    for actor in room.actors:
+        if target:
+            break
+
+        keywords = actor.name.lower().split()
+        for keyword in keywords:
+            if keyword.startswith(name):
+                target = actor
+                break
+
+    if target == self:
+        self.echo("You can't punch yourself.")
+        return
+
+    if not target:
+        self.echo("Can't find that here.")
+        return
+
+    self.act
+    Battles.initiate(self, target)
+
 
 class RegenerationManager(TimerManager):
     TIMER_DELAY = 5.0
@@ -190,15 +221,15 @@ class RegenerationManager(TimerManager):
 
             stats = char.stats
 
-            hp = stats.current_hp.base
+            hp = stats.hp.base
             max_hp = stats.hp.total
             new_hp = min(max_hp, hp + int(ceil(max_hp * 0.1)))
-            char.stats.current_hp.base = new_hp
+            char.stats.hp.base = new_hp
 
-            mana = stats.current_mana.base
+            mana = stats.mana.base
             max_mana = stats.mana.total
             new_mana = min(max_mana, mana + int(ceil(max_mana * 0.1)))
-            char.stats.current_mana.base = new_mana
+            char.stats.mana.base = new_mana
 
             char.save()
 

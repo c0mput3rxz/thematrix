@@ -302,7 +302,7 @@ Did I get that right, {} (Y/N)? """.format(self.temporary_actor.name))
 
   Digital - You are fixed in either world.
         - Your main goal is to restore equilibrium to The Matrix.
-        - Available classes: {rArchitech{w, {rAgent{w, {rSentinel{w, {rProgram{x     
+        - Available classes: {BArchitect{w, {bAgent{w, {rSentinel{w, {rProgram{x     
 
 """)
 
@@ -564,7 +564,7 @@ Welcome to Waterdeep 'City Of Splendors'!  Please obey the rules, (help rules).
 
         hp_color = "{G"
         hp = stats.hp.total
-        current_hp = stats.current_hp.total
+        current_hp = stats.hp.total
         hp_percent = (float(current_hp) / float(hp)) if hp else 0.0
         if hp_percent < (1.0 / 3.0):
             hp_color = "{R"
@@ -579,9 +579,9 @@ Welcome to Waterdeep 'City Of Splendors'!  Please obey the rules, (help rules).
             "%g": colored_hp,
             "%h": current_hp,
             "%M": stats.mana.total,
-            "%m": stats.current_mana.total,
+            "%m": stats.mana.total,
             "%V": stats.moves.total,
-            "%v": stats.current_moves.total,
+            "%v": stats.moves.total,
             "%x": total_xp,
             "%X": xp_tnl,
             "%a": stats.alignment.total,
@@ -620,7 +620,7 @@ Welcome to Waterdeep 'City Of Splendors'!  Please obey the rules, (help rules).
             if targets:
                 target = targets[0]
 
-                current_hp = target.stats.current_hp.total
+                current_hp = target.stats.hp.total
                 total_hp = target.stats.hp.total
                 health_text = "now considers you a force to be reckoned with"
 

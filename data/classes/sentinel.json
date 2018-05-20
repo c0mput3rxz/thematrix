@@ -1,8 +1,9 @@
 {
     "id": "sentinel",
     "name": "Sentinel",
+    "colored_name": "{8S{Rentinel",
     "race": "digital",
     "short_name": "Sent",
-    "colored_short_name": "{5Sent{x",
+    "colored_short_name": "{8Sent{x",
     "tier": 1
 }
