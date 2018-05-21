@@ -1,6 +1,7 @@
 from gevent import monkey
 from mud.client import Client
 from mud.inject import inject
+from utils.ansi import pad_left, pad_right
 from mud.connection import Connection
 from mud.server import Server
 from mud.module import Module
@@ -289,28 +290,22 @@ Did I get that right, {} (Y/N)? """.format(self.temporary_actor.name))
     @inject("Races")
     def start_select_race(self, Races):
         self.state = "select_race"
-        self.write("""
+        output = """
 {B+---------------------------[ {RPick your Race {B]----------------------------+
 
-  {BWelcome to the birthing process of your character.  Below you will
-  find a choice between human and digital. There is a war coming and 
-  you have to choose. 
 
-  Human - You jump back and forth between the real world and digital
-        - Humans main goal is to stay alive. 
-        - Available classes: {WCoder{w, {WJacker{w, {WPlugged{w, {WReal{R
+"""
+        for race in Races.query():
+            output += "       {{w {} {{y       {}  {{w    {}\n".format(
+                pad_right(race.colored_name, 15),
+                pad_right(race.bonuses, 10),
+                race.desc)
 
-  Digital - You are fixed in either world.
-        - Your main goal is to restore equilibrium to The Matrix.
-        - Available classes: {BArchitect{w, {bAgent{w, {rSentinel{w, {rProgram{x     
-
-""")
-
-        output = """
+        output += """
 
 +-------------------------------------------------------------------------+
-
-Please choose a race (human/digital), or HELP (Name of Race) for more info: """
+Telnarius
+Please choose a race, or HELP (Name of Race) for more info: """
         self.write(output)
 
     @inject("Races")
@@ -333,11 +328,10 @@ Please choose a race (human/digital), or HELP (Name of Race) for more info: """
 """
 
         for gender in Genders.query():
-            if self.temporary_actor.race_ids[0] == gender.race:
-                output += "        {}\n".format(gender.name)
+            output += "        {{B{}\n".format(gender.name)
 
         output += """
-+-------------------------------------------------------------------------+
+{w+-------------------------------------------------------------------------+
 
 Please choose a gender for your character: """
 
@@ -364,6 +358,7 @@ Please choose a gender for your character: """
   you can reroll and be able to choose a new race and class.
 
   For more information type HELP (Name of Class) to see their help files.
+
 """
         classes = list(Classes.query({"tier": self.temporary_actor.tier}))
         if len(classes) == 1:
@@ -371,7 +366,7 @@ Please choose a gender for your character: """
             return
 
         for cls in classes:
-            output += "{}{}\n".format(" " * 20, cls.name)
+            output += "{}{}{}\n".format(" " * 20, pad_right(cls.colored_name, 20), cls.desc)
 
         output += """
 
